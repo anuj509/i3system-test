@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { DataService } from '../services/data.service';
-import { Subject, BehaviorSubject, Observable } from 'rxjs';
+import { Subject, BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 import { takeUntil, throttleTime, mergeMap, scan, map, tap } from 'rxjs/operators';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-// import * as mockData from '../../assets/data/countries.json';
 import * as _ from 'lodash';
 
 @Component({
@@ -20,6 +19,7 @@ export class Sample1Component implements OnInit, OnDestroy {
 
   offset = new BehaviorSubject(null);
   infinite: Observable<any[]>;
+  countryList: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
   // countries;
   private _onDestroy = new Subject<void>();
@@ -32,16 +32,21 @@ export class Sample1Component implements OnInit, OnDestroy {
         return [...Object.values(acc), ...batch ];
       }, [])
     );
-
     this.infinite = batchMap;
   }
 
   ngOnInit(): void {
+    this.dataService.getCountries()
+    .pipe(takeUntil(this._onDestroy))
+    .subscribe(response => {
+      let countryListObj = _.cloneDeep(response);
+      this.countryList.next(countryListObj);
+    });
+    
   }
 
   getBatch(offset) {
-    return this.dataService.getCountries()
-    .pipe(takeUntil(this._onDestroy))
+    return this.countryList
     .pipe(
         tap(arr => (arr.length ? null : (this.theEnd = true))),
         map((arr) => {
