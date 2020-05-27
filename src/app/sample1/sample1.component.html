@@ -1,0 +1,16 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Countries</mat-card-title>
+        <mat-card-subtitle>List of all the countries</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <ng-container *ngIf="infinite | async as countries">
+            <cdk-virtual-scroll-viewport itemSize="20" class="viewport" (scrolledIndexChange)="nextBatch($event,pageIndex)">
+                <div *cdkVirtualFor="let country of countries; let i=index; trackBy:trackByIdx" class="country">
+                    <div class="cname">{{country.name || 'Loading...'}}</div>
+                    <div class="ccode">{{country.code || 'Loading...'}}</div>
+                </div>
+            </cdk-virtual-scroll-viewport>
+        </ng-container>
+    </mat-card-content>
+</mat-card>

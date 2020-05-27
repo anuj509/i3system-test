@@ -1,0 +1,30 @@
+@import "~@angular/material/theming";
+$app-primary: mat-palette($mat-indigo);
+$primary: mat-color($app-primary);
+$text-primary: white;
+
+mat-drawer {
+    width: 260px;
+}
+
+mat-drawer-container {
+    height: 100%;
+}
+
+mat-drawer-content {
+    padding: 20px;
+    padding-top: 0;
+}
+
+.icon {
+    padding: 0 14px;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.active {
+    color: $text-primary !important;
+    background: $primary;
+}
